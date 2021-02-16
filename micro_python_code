@@ -1,0 +1,27 @@
+from m5stack import *
+from m5ui import *
+from uiflow import *
+import espnow
+import wifiCfg
+import time
+import unit
+
+setScreenColor(0x111111)
+env20 = unit.get(unit.ENV2, unit.PORTA)
+
+
+
+
+wifiCfg.wlan_ap.active(True)
+wifiCfg.wlan_sta.active(True)
+espnow.init()
+
+
+espnow.broadcast(data=str(({'T':(env20.temperature),'RH':(env20.humidity),'PR':(env20.pressure)})))
+while True:
+  espnow.broadcast(data=str(str([(env20.temperature) * (9 / 5) + 32, env20.humidity, env20.pressure])))
+  M5Led.on()
+  wait(10)
+  M5Led.off()
+  wait(1)
+  wait_ms(2)
